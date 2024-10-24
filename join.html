@@ -50,6 +50,7 @@
             var email = document.getElementById("email").value;
             var otp = document.getElementById("otp").value;
             var loading = document.getElementById("loading");
+            var joiningLoading = document.getElementById("joiningLoading");
             loading.style.display = "block";
             var xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -57,7 +58,10 @@
                     var response = JSON.parse(this.responseText);
                     loading.style.display = "none";
                     if (response.status === 'success') {
-                        window.location.href = response.link;
+                        joiningLoading.style.display = "flex"; // Show "Joining Channel..." spinner
+                        setTimeout(function() {
+                            window.location.href = response.link;
+                        }, 2000); // Optional delay to enhance UX
                     } else {
                         alert("Invalid OTP");
                     }
@@ -93,6 +97,12 @@
                 <input type="text" id="otp" placeholder="OTP" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
                 <button onclick="verifyOTP()" class="w-full bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Submit OTP</button>
                 <div id="loading" class="loading mx-auto my-6"></div>
+            </div>
+
+            <!-- Joining Channel Loading -->
+            <div id="joiningLoading" class="hidden flex-col items-center justify-center text-white mt-10">
+                <div class="loading mb-4"></div>
+                <p class="text-lg font-semibold">Joining Channel...</p>
             </div>
         </div>
     </main>
