@@ -38,8 +38,8 @@
                 if (this.readyState == 4 && this.status == 200) {
                     alert("OTP sent to " + email);
                     loading.style.display = "none";
-                    document.getElementById("otpForm").classList.add("fade-in");
-                    document.getElementById("emailForm").style.display = "none";
+                    document.getElementById("otpForm").classList.remove("hidden");
+                    document.getElementById("emailForm").classList.add("hidden");
                 }
             };
             xhttp.open("GET", "https://script.google.com/macros/s/AKfycbzCvadDU55C0f2oqjG3ZV-4C81pb9Ov_w_ense9wKqqpn_TPV0sVYuPLp-bZdSzxY3_Xw/exec?email=" + encodeURIComponent(email), true);
@@ -78,6 +78,7 @@
     <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center w-full">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Email Form -->
             <div id="emailForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto fade-in transform transition-all duration-500 ease-in-out hover:scale-105">
                 <h2 class="text-3xl font-bold mb-6 text-center">Join Free Library</h2>
                 <p class="mb-6 text-center text-gray-600">Enter your email to receive OTP and gain access to our exclusive study materials at no cost!</p>
@@ -86,6 +87,7 @@
                 <div id="loading" class="loading mx-auto my-6"></div>
             </div>
 
+            <!-- OTP Form -->
             <div id="otpForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto hidden transform transition-all duration-500 ease-in-out hover:scale-105">
                 <h2 class="text-3xl font-bold mb-6 text-center">Enter OTP</h2>
                 <input type="text" id="otp" placeholder="OTP" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
