@@ -31,8 +31,35 @@
         .user-welcome {
             display: none;
         }
+        .alert-box {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1000;
+            font-size: 1rem;
+        }
+        .alert-box.show {
+            display: block;
+            animation: fadeInUp 0.5s ease-out;
+        }
     </style>
     <script>
+        function showAlert(message) {
+            const alertBox = document.querySelector('.alert-box');
+            alertBox.textContent = message;
+            alertBox.classList.add('show');
+            setTimeout(() => {
+                alertBox.classList.remove('show');
+            }, 3000); // Hide after 3 seconds
+        }
+
         function inviteFriend() {
             const shareData = {
                 title: 'Join Adi Study Zone',
@@ -42,16 +69,15 @@
 
             if (navigator.share) {
                 navigator.share(shareData)
-                    .then(() => console.log('Link shared successfully!'))
-                    .catch(console.error);
+                    .then(() => showAlert('Link shared successfully!'))
+                    .catch(() => showAlert('Failed to share the link.'));
             } else {
                 navigator.clipboard.writeText(shareData.url)
-                    .then(() => alert('Link copied to clipboard!'))
-                    .catch(console.error);
+                    .then(() => showAlert('Link copied to clipboard!'))
+                    .catch(() => showAlert('Failed to copy the link.'));
             }
         }
 
-        // Display Telegram user info without login
         function displayUser(user) {
             const userWelcome = document.querySelector('.user-welcome');
             const userName = document.querySelector('.user-name');
@@ -62,7 +88,6 @@
             userDp.src = user.photo_url || 'https://via.placeholder.com/100'; // Fallback image
         }
 
-        // Telegram Mini Web App initialization
         window.addEventListener('load', () => {
             const tg = window.Telegram.WebApp;
             tg.ready();
@@ -75,6 +100,9 @@
     </script>
 </head>
 <body class="bg-gray-100 text-gray-900">
+
+    <!-- Alert Box -->
+    <div class="alert-box"></div>
 
     <!-- Header -->
     <header class="bg-white shadow-md py-4">
