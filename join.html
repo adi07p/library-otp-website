@@ -7,27 +7,25 @@
     <title>Email Verification</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
         }
         .loading {
-            display: none;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top-color: #38bdf8;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .loading span {
+            width: 12px;
+            height: 12px;
+            background-color: #3b82f6;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
+            animation: bounce 1.4s infinite ease-in-out;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.6; }
-        }
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
+        .loading span:nth-child(1) { animation-delay: -0.32s; }
+        .loading span:nth-child(2) { animation-delay: -0.16s; }
+        .loading span:nth-child(3) { animation-delay: 0; }
         .alert {
             display: none;
             padding: 1rem;
@@ -56,7 +54,7 @@
         function sendOTP() {
             const email = document.getElementById("email").value;
             const loading = document.getElementById("loading");
-            loading.style.display = "block";
+            loading.style.display = "flex";
 
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
@@ -109,36 +107,53 @@
         }
     </script>
 </head>
-<body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex flex-col items-center justify-center">
+<body class="bg-white min-h-screen flex flex-col">
 
     <!-- Header -->
-    <header class="bg-white w-full shadow-lg py-4 text-center text-gray-700 font-bold text-xl md:text-3xl">
-        <h1>Adi Free Library</h1>
+    <header class="bg-blue-600 text-white py-4 px-4 sticky top-0 z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">Adi Free Library</h1>
+            <nav>
+                <a href="https://padhaikaro.in/donate" class="text-sm font-semibold hover:underline">Donate</a>
+            </nav>
+        </div>
     </header>
 
     <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center w-full">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Email Form -->
-            <div id="emailForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto fade-in transform transition-all duration-500 ease-in-out hover:scale-105">
-                <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center">Join Free Library</h2>
+            <div id="emailForm" class="bg-gray-100 text-gray-900 p-8 rounded-lg shadow-lg max-w-lg mx-auto fade-in transform transition-all duration-500 ease-in-out hover:scale-105">
+                <h2 class="text-2xl font-bold mb-4 text-center">Join Free Library</h2>
                 <p class="mb-6 text-center text-gray-600">Enter your email to receive OTP and gain access to our exclusive study materials!</p>
-                <input type="email" id="email" placeholder="Email" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
-                <button onclick="sendOTP()" class="w-full bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Join Channel</button>
-                <div id="loading" class="loading mx-auto my-6"></div>
+                <input type="email" id="email" placeholder="Email" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300" required>
+                <button onclick="sendOTP()" class="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Join Channel</button>
+                <div id="loading" class="loading mx-auto my-6">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
 
             <!-- OTP Form -->
-            <div id="otpForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto hidden transform transition-all duration-500 ease-in-out hover:scale-105">
-                <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center">Enter OTP</h2>
-                <input type="text" id="otp" placeholder="OTP" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
-                <button onclick="verifyOTP()" class="w-full bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Submit OTP</button>
-                <div id="loading" class="loading mx-auto my-6"></div>
+            <div id="otpForm" class="bg-gray-100 text-gray-900 p-8 rounded-lg shadow-lg max-w-lg mx-auto hidden transform transition-all duration-500 ease-in-out hover:scale-105">
+                <h2 class="text-2xl font-bold mb-4 text-center">Enter OTP</h2>
+                <input type="text" id="otp" placeholder="OTP" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-blue-400 focus:border-blue-500 transition-all duration-300" required>
+                <button onclick="verifyOTP()" class="w-full bg-gradient-to-r from-blue-500 to-blue-700 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Submit OTP</button>
+                <div id="loading" class="loading mx-auto my-6">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
 
             <!-- Joining Channel Loading -->
-            <div id="joiningLoading" class="hidden flex-col items-center justify-center text-white mt-10">
-                <div class="loading mb-4"></div>
+            <div id="joiningLoading" class="hidden flex-col items-center justify-center text-gray-700 mt-10">
+                <div class="loading mb-4">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
                 <p class="text-lg font-semibold">Joining Channel...</p>
             </div>
 
@@ -148,10 +163,15 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white w-full py-4 text-gray-600 text-center shadow-inner text-sm md:text-base">
-        <p>&copy; 2024 Study Times. All Rights Reserved.</p>
+    <footer class="bg-gray-100 py-4 text-gray-600 text-center shadow-inner text-sm md:text-base">
+        <p>&copy; 2024 Adi Study Zone.</p>
         <p>Follow us on <a href="https://t.me/+gwYNY9z0fvYzOGE1" class="text-blue-500 hover:underline">Telegram</a></p>
     </footer>
+
+    <!-- Donate Button -->
+    <a href="https://padhaikaro.in/donate" class="fixed bottom-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transform transition hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none">
+        Donate
+    </a>
 
 </body>
 </html>
