@@ -20,27 +20,55 @@
             height: 40px;
             animation: spin 1s linear infinite;
         }
-        .fade-in {
-            opacity: 0;
-            animation: fadeIn 1s forwards;
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.2); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.6; }
         }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        .alert {
+            display: none;
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+        }
+        .alert-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .alert-error {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
     </style>
     <script>
+        function showAlert(message, type) {
+            const alert = document.getElementById("alert");
+            alert.textContent = message;
+            alert.className = `alert ${type === "success" ? "alert-success" : "alert-error"}`;
+            alert.style.display = "block";
+        }
+
         function sendOTP() {
-            var email = document.getElementById("email").value;
-            var loading = document.getElementById("loading");
+            const email = document.getElementById("email").value;
+            const loading = document.getElementById("loading");
             loading.style.display = "block";
-            var xhttp = new XMLHttpRequest();
+
+            const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    alert("OTP sent to " + email);
+                if (this.readyState === 4) {
                     loading.style.display = "none";
-                    document.getElementById("otpForm").classList.remove("hidden");
-                    document.getElementById("emailForm").classList.add("hidden");
+                    if (this.status === 200) {
+                        showAlert("OTP sent to " + email, "success");
+                        document.getElementById("otpForm").classList.remove("hidden");
+                        document.getElementById("emailForm").classList.add("hidden");
+                    } else {
+                        showAlert("Failed to send OTP. Please try again.", "error");
+                    }
                 }
             };
             xhttp.open("GET", "https://script.google.com/macros/s/AKfycbzCvadDU55C0f2oqjG3ZV-4C81pb9Ov_w_ense9wKqqpn_TPV0sVYuPLp-bZdSzxY3_Xw/exec?email=" + encodeURIComponent(email), true);
@@ -48,27 +76,31 @@
         }
 
         function verifyOTP() {
-            var email = document.getElementById("email").value;
-            var otp = document.getElementById("otp").value;
-            var loading = document.getElementById("loading");
-            var joiningLoading = document.getElementById("joiningLoading");
-            
-            // Show spinner and joining message immediately after OTP submission
-            document.getElementById("otpForm").style.display = "none"; // Hide OTP form
-            joiningLoading.style.display = "flex"; // Show "Joining Channel..." spinner
+            const email = document.getElementById("email").value;
+            const otp = document.getElementById("otp").value;
+            const loading = document.getElementById("loading");
+            const joiningLoading = document.getElementById("joiningLoading");
 
-            var xhttp = new XMLHttpRequest();
+            document.getElementById("otpForm").style.display = "none";
+            joiningLoading.style.display = "flex";
+
+            const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    var response = JSON.parse(this.responseText);
-                    if (response.status === 'success') {
-                        setTimeout(function() {
-                            window.location.href = response.link;
-                        }, 2000); // Optional delay for user experience
+                if (this.readyState === 4) {
+                    joiningLoading.style.display = "none";
+                    if (this.status === 200) {
+                        const response = JSON.parse(this.responseText);
+                        if (response.status === "success") {
+                            showAlert("OTP Verified! Redirecting...", "success");
+                            setTimeout(() => {
+                                window.location.href = response.link;
+                            }, 2000);
+                        } else {
+                            showAlert("Invalid OTP. Please try again.", "error");
+                            document.getElementById("otpForm").style.display = "block";
+                        }
                     } else {
-                        joiningLoading.style.display = "none";
-                        alert("Invalid OTP");
-                        document.getElementById("otpForm").style.display = "block"; // Show OTP form again
+                        showAlert("Verification failed. Please try again.", "error");
                     }
                 }
             };
@@ -80,7 +112,7 @@
 <body class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 min-h-screen flex flex-col items-center justify-center">
 
     <!-- Header -->
-    <header class="bg-white w-full shadow-lg py-4 text-center text-gray-700 font-bold text-3xl">
+    <header class="bg-white w-full shadow-lg py-4 text-center text-gray-700 font-bold text-xl md:text-3xl">
         <h1>Adi Free Library</h1>
     </header>
 
@@ -89,8 +121,8 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Email Form -->
             <div id="emailForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto fade-in transform transition-all duration-500 ease-in-out hover:scale-105">
-                <h2 class="text-3xl font-bold mb-6 text-center">Join Free Library</h2>
-                <p class="mb-6 text-center text-gray-600">Enter your email to receive OTP and gain access to our exclusive study materials at no cost!</p>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center">Join Free Library</h2>
+                <p class="mb-6 text-center text-gray-600">Enter your email to receive OTP and gain access to our exclusive study materials!</p>
                 <input type="email" id="email" placeholder="Email" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
                 <button onclick="sendOTP()" class="w-full bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Join Channel</button>
                 <div id="loading" class="loading mx-auto my-6"></div>
@@ -98,7 +130,7 @@
 
             <!-- OTP Form -->
             <div id="otpForm" class="bg-white text-gray-900 p-8 rounded-lg shadow-2xl max-w-lg mx-auto hidden transform transition-all duration-500 ease-in-out hover:scale-105">
-                <h2 class="text-3xl font-bold mb-6 text-center">Enter OTP</h2>
+                <h2 class="text-2xl md:text-3xl font-bold mb-4 text-center">Enter OTP</h2>
                 <input type="text" id="otp" placeholder="OTP" class="w-full p-4 mb-6 border border-gray-300 rounded-lg focus:ring-4 focus:ring-indigo-400 focus:border-indigo-500 transition-all duration-300" required>
                 <button onclick="verifyOTP()" class="w-full bg-gradient-to-r from-teal-400 to-blue-500 text-white font-semibold py-3 rounded-lg shadow-lg transform transition hover:scale-105 hover:shadow-xl focus:ring-4 focus:ring-blue-300 focus:outline-none">Submit OTP</button>
                 <div id="loading" class="loading mx-auto my-6"></div>
@@ -109,11 +141,14 @@
                 <div class="loading mb-4"></div>
                 <p class="text-lg font-semibold">Joining Channel...</p>
             </div>
+
+            <!-- Alert -->
+            <div id="alert" class="alert"></div>
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white w-full py-4 text-gray-600 text-center shadow-inner">
+    <footer class="bg-white w-full py-4 text-gray-600 text-center shadow-inner text-sm md:text-base">
         <p>&copy; 2024 Study Times. All Rights Reserved.</p>
         <p>Follow us on <a href="https://t.me/+gwYNY9z0fvYzOGE1" class="text-blue-500 hover:underline">Telegram</a></p>
     </footer>
