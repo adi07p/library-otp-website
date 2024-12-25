@@ -12,7 +12,7 @@
             40% { transform: scale(1); }
         }
         .loading {
-            display: flex;
+            display: none;
             justify-content: center;
             gap: 8px;
         }
@@ -54,12 +54,12 @@
         function sendOTP() {
             const email = document.getElementById("email").value;
             const loading = document.getElementById("loading");
-            loading.style.display = "flex";
+            loading.style.display = "flex"; // Show the loading animation
 
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState === 4) {
-                    loading.style.display = "none";
+                    loading.style.display = "none"; // Hide the loading animation
                     if (this.status === 200) {
                         showAlert("OTP sent to " + email, "success");
                         document.getElementById("otpForm").classList.remove("hidden");
@@ -79,13 +79,13 @@
             const loading = document.getElementById("loading");
             const joiningLoading = document.getElementById("joiningLoading");
 
-            document.getElementById("otpForm").style.display = "none";
-            joiningLoading.style.display = "flex";
+            document.getElementById("otpForm").style.display = "none"; // Hide OTP form
+            joiningLoading.style.display = "flex"; // Show "Joining Channel..." animation
 
             const xhttp = new XMLHttpRequest();
             xhttp.onreadystatechange = function() {
                 if (this.readyState === 4) {
-                    joiningLoading.style.display = "none";
+                    joiningLoading.style.display = "none"; // Hide "Joining Channel..." animation
                     if (this.status === 200) {
                         const response = JSON.parse(this.responseText);
                         if (response.status === "success") {
@@ -95,7 +95,7 @@
                             }, 2000);
                         } else {
                             showAlert("Invalid OTP. Please try again.", "error");
-                            document.getElementById("otpForm").style.display = "block";
+                            document.getElementById("otpForm").style.display = "block"; // Show OTP form again
                         }
                     } else {
                         showAlert("Verification failed. Please try again.", "error");
@@ -114,7 +114,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-xl font-bold">Adi Free Library</h1>
             <nav>
-                <a href="https://padhaikaro.in/donate" class="text-sm font-semibold hover:underline">Donate</a>
+                <a href="https://padhaikaro.in/donate/" class="text-sm font-semibold hover:underline">Donate</a>
             </nav>
         </div>
     </header>
@@ -164,12 +164,12 @@
 
     <!-- Footer -->
     <footer class="bg-gray-100 py-4 text-gray-600 text-center shadow-inner text-sm md:text-base">
-        <p>&copy; 2024 Adi Study Zone.</p>
+        <p>&copy; 2024 Adi Op.</p>
         <p>Follow us on <a href="https://t.me/+gwYNY9z0fvYzOGE1" class="text-blue-500 hover:underline">Telegram</a></p>
     </footer>
 
     <!-- Donate Button -->
-    <a href="https://padhaikaro.in/donate" class="fixed bottom-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transform transition hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none">
+    <a href="https://padhaikaro.in/donate/" class="fixed bottom-4 right-4 bg-blue-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-blue-700 transform transition hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none">
         Donate
     </a>
 
